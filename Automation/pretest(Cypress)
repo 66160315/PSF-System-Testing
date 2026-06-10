@@ -1,0 +1,120 @@
+describe('Pretest 01', () => {
+
+beforeEach(()=>{
+    cy.visit('http://127.0.0.1:8080/')
+})
+
+afterEach(()=>{
+    cy.get('a[href="/logout"]')
+})
+
+   it('TC-PSF-01-03-01 ตรวจสอบการ Login เข้าสู่ระบบ PSF ถูกต้อง', () => {
+    cy.get('#email').type('admin')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    //ตรวจสอบ Link ไปที่หน้าใหม่
+    cy.url().should('include','http://127.0.0.1:8080/main');
+  })
+  
+  it('TC-PSF-01-03-01 ตรวจสอบการ Login เข้าสู่ระบบ PSF ถูกต้อง', () => {
+    cy.get('#email').type('admin')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    //ตรวจสอบข้อความแจ้งเตือน POP message
+    cy.on('window:alert',(Text)=>{expect(Text).to.equal('กรุณากรอกข้อมูลให้ถูกต้อง')})
+  })
+
+  it('TC-PSF-02-01-01 ตรวจสอบการกรอกข้อมูลค้นหาจากชื่อผู้ใช้', () => {
+    cy.get('#email').type('admin')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    //เปิดหน้าจัดการผู้ใช้งาน
+    cy.get('a[href="/manageUser"]').click()
+    //ค้นหา สุภาพร ในช่อง
+    cy.get('#searchuser').type('สุภาพร')
+    //คลิกค้นหา
+    cy.get('#btnsearch').click()
+    //ตรวจสอบว่ามีชื่อ สุภาพร ไหม
+    cy.contains('สุภาพร').should('be.visible')
+  })
+
+  it('TC-PSF-01-01-08 ตรวจสอบการเข้าสู้ระบบสำหรับผู้ใช้สถานะอาจารย์', () => {
+    cy.get('#email').type('pichet')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    //ตรวจสอบแสดงข้อความชื่อผู้ใช้ที่หน้าหลักคือ “ผศ.ดร.พิเชษ วะยะลุน”
+    cy.contains('ผศ.ดร.พิเชษ วะยะลุน').should('be.visible')
+    ////ตรวจสอบแสดงข้อความชื่อผู้ใช้ที่หน้าหลักคือ “ผศ.ดร.พิเชษ วะยะลุน”
+    cy.contains('อาจารย์').should('be.visible')
+  })
+
+  it('TC-PSF-03-05-01 ตรวจสอบการกดปุ่มบันทึกหน้าจอเพิ่มข้อมูลนิสิตรอการพินิจ', () => {
+    cy.get('#email').type('admin')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    cy.get('a[href="/manageStudentConsider"]').click() 
+    cy.get('#btnAdd').click()
+    cy.get('#studentIDCon').type('65160000')
+    cy.get('#nameStuCon').type('จิรายุ เจริญผลวัฒนา')
+    cy.get('#stuLevelCon').select('ตรี ปกติ')
+    cy.get('#stuGpaCon').type('1.95')
+    cy.get('#stuStatusCon').select('10')
+    cy.get('#creditPassedCon').type('90')
+    cy.get('#creditDownCon').type('100')
+    cy.get('#considerCon').select('โปรต่ำ')
+    cy.get('#considertime').select('1')
+    cy.get('#ok').click()
+    //ตรวจสอบข้อความชื่อผู้ใช้ที่หน้าจอ “จัดการข้อมูลนิสิตรอการพินิจ”ภายหลังจากการเพิ่มข้อมูลในตารางคือ “จิรายุ เจริญผลวัฒนา”
+    cy.contains('จิรายุ เจริญผลวัฒนา').should('be.visible')
+  })
+
+  it('TC-PSF-03-05-01 ตรวจสอบการกดปุ่มบันทึกหน้าจอเพิ่มข้อมูลนิสิตรอการพินิจ', () => {
+    cy.get('#email').type('admin')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    cy.get('a[href="/manageStudentConsider"]').click() 
+    //ตรวจสอบแสดงข้อความ“จัดการข้อมูลนิสิตรอการพินิจ”
+    cy.contains('จัดการข้อมูลนิสิตรอการพินิจ').should('be.visible')
+  })
+
+  it('TS-PSF-03-02-02 ตรวจสอบการกดปุ่มเพิ่มข้อมูลบนหน้าจอจัดการนิสิตรอการพินิจ', () => {
+    cy.get('#email').type('admin')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    cy.get('a[href="/manageStudentConsider"]').click() 
+    cy.get('#btnAdd').click()
+    //ตรวจสอบแสดงข้อความ “เพิ่มข้อมูลนิสิตรอการพินิจ”
+    cy.contains('เพิ่มข้อมูลนิสิตรอการพินิจ').should('be.visible')
+  })
+
+  it('TS-PSF-03-02-03 ตรวจสอบการกดปุ่มแก้ไขบนหน้าจอจัดการข้อมูลนิสิตรอการพินิจ', () => {
+    cy.get('#email').type('admin')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    cy.get('a[href="/manageStudentConsider"]').click() 
+    cy.get('#btnedit').click()
+    //ตรวจสอบแสดงข้อความ “58660044”
+    cy.get('#studentIDCon').should('have.value','58660044')
+  })
+
+  it('TS-PSF-03-02-04 ตรวจสอบการกดปุ่มลบข้อมูลบนหน้าจอจัดการข้อมูลนิสิตรอการพินิจ', () => {
+    cy.get('#email').type('admin')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    cy.get('a[href="/manageStudentConsider"]').click() 
+    cy.get('#btndelete').click()
+    //ตรวจสอบแสดงข้อความชื่อนิสิตคือ “นาย ชรัญธร วงษ์ไทยสงค์” ได้
+    cy.contains('นาย ชรัญธร วงษ์ไทยสงค์').should('be.visible')
+  })
+
+  it('TS-PSF-03-02-05 ตรวจสอบการกดปุ่มยกเลิกหน้าจอยืนยันลบข้อมูลนิสิตรอการพินิจ', () => {
+    cy.get('#email').type('admin')
+    cy.get('#password').type('test_password')
+    cy.get('#btnok').click()
+    cy.get('a[href="/manageStudentConsider"]').click() 
+    cy.get('#btndelete').click()
+    //ตรวจสอบแสดงข้อความชื่อนิสิตคือ “นาย ชรัญธร วงษ์ไทยสงค์” ได้
+    cy.get('#cancel').click()
+    cy.contains('นาย ชรัญธร วงษ์ไทยสงค์').should('be.visible')
+  })
+})
